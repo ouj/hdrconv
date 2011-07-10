@@ -32,7 +32,7 @@ Color *ReadImage(const string &name, int *width, int *height) {
             !strcmp(name.c_str() + suffixOffset, ".PFM"))
             return ReadImagePFM(name, width, height);
     }
-    fprintf(stderr, "Can't determine image file type from suffix of filename \"%s\"",
+    fprintf(stderr, "Can't determine image file type from suffix of filename \"%s\"\n",
           name.c_str());
     Color *ret = new Color[1];
     ret[0] = Color(0.5f, 0.5f, 0.5f);
@@ -65,7 +65,7 @@ void WriteImage(const string &name, float *pixels, float *alpha, int xRes,
             return;
         }
     }
-    fprintf(stderr, "Can't determine image file type from suffix of filename \"%s\"",
+    fprintf(stderr, "Can't determine image file type from suffix of filename \"%s\"\n",
           name.c_str());
 }
 
@@ -108,10 +108,10 @@ static Color *ReadImageEXR(const string &name, int *width, int *height) {
         ret[i] = Color(rgb[3*i], rgb[3*i+1], rgb[3*i+2]);
     }
     delete[] rgb;
-    fprintf(stdout, "Read EXR image %s (%d x %d)", name.c_str(), *width, *height);
+    fprintf(stdout, "Read EXR image %s (%d x %d)\n", name.c_str(), *width, *height);
     return ret;
     } catch (const std::exception &e) {
-        fprintf(stderr, "Unable to read image file \"%s\": %s", name.c_str(),
+        fprintf(stderr, "Unable to read image file \"%s\": %s\n", name.c_str(),
             e.what());
         return NULL;
     }
@@ -136,7 +136,7 @@ static void WriteImageEXR(const string &name, float *pixels,
         file.writePixels(yRes);
     }
     catch (const std::exception &e) {
-        fprintf(stderr, "Unable to write image file \"%s\": %s", name.c_str(),
+        fprintf(stderr, "Unable to write image file \"%s\": %s\n", name.c_str(),
             e.what());
     }
 
@@ -389,7 +389,7 @@ void WriteImageTGA(const string &name, float *pixels,
     uchar*              outBuf;
 
     if ((file = fopen(name.c_str(), "wb")) == NULL) {
-        fprintf(stderr, "Unable to open output filename \"%s\"", name.c_str());
+        fprintf(stderr, "Unable to open output filename \"%s\"\n", name.c_str());
         return;
     }
 
@@ -411,7 +411,7 @@ void WriteImageTGA(const string &name, float *pixels,
         }
     }
     if (fwrite(outBuf, 1, 3 * xRes * yRes, file) != uint32_t(3*xRes*yRes))
-        fprintf(stderr, "Error writing TGA image file \"%s\"", name.c_str());
+        fprintf(stderr, "Error writing TGA image file \"%s\"\n", name.c_str());
     free(outBuf);
     fclose(file);
 }
@@ -433,7 +433,7 @@ static Color *ReadImageTGA(const string &name, int *width, int *height)
 
     FILE *file = fopen(name.c_str(), "rb");
     if (!file) {
-        fprintf(stderr,"Unable to open TGA file \"%s\"", name.c_str());
+        fprintf(stderr,"Unable to open TGA file \"%s\"\n", name.c_str());
         return NULL;
     }
 
@@ -451,7 +451,7 @@ static Color *ReadImageTGA(const string &name, int *width, int *height)
           (imageSpec.pixelDepth != 8)) ||
         (header.imageType != 2 && header.imageType != 3)) {
         fprintf(stderr,"ReadImageTGA: I don't know this format "
-              "(type=%i pxsize=%i abits=%i)", header.imageType,
+              "(type=%i pxsize=%i abits=%i)\n", header.imageType,
               imageSpec.pixelDepth,
               imageSpec.attributeBits);
         fclose(file);
@@ -475,7 +475,7 @@ static Color *ReadImageTGA(const string &name, int *width, int *height)
     int size = *width * *height * pixbytes;
     srcBuf = (uchar *)malloc(size);
     if (fread(srcBuf, 1, size, file) != (uint32_t)size) {
-        fprintf(stderr, "Premature end-of-file when reading TGA image \"%s\"", name.c_str());
+        fprintf(stderr, "Premature end-of-file when reading TGA image \"%s\"\n", name.c_str());
         free(srcBuf);
         fclose(file);
         return NULL;
@@ -488,9 +488,10 @@ static Color *ReadImageTGA(const string &name, int *width, int *height)
     Color *dst = ret;
     for (y = *height - 1; y >= 0; y--)
         for (x = 0; x < *width; x++) {
-            if (pixbytes == 1)
-                *dst++ = Color((*src++) / 255.f, (*src++) / 255.f, (*src++) / 255.f);
-            else {
+            if (pixbytes == 1) {
+                float c = (*src++) / 255.f;
+                *dst++ = Color(c, c, c);
+            } else {
                 float c[3];
                 c[2] = (*src++) / 255.f;
                 c[1] = (*src++) / 255.f;
@@ -515,7 +516,7 @@ static Color *ReadImageTGA(const string &name, int *width, int *height)
     }
     free(srcBuf);
     fclose(file);
-    fprintf(stdout,"Read TGA image %s (%d x %d)", name.c_str(), *width, *height);
+    fprintf(stdout,"Read TGA image %s (%d x %d)\n", name.c_str(), *width, *height);
     return ret;
 }
 
@@ -655,7 +656,7 @@ static Color *ReadImagePFM(const string &filename, int *xres, int *yres) {
     return rgb;
 
  fail:
-    fprintf(stderr, "Error reading PFM file \"%s\"", filename.c_str());
+    fprintf(stderr, "Error reading PFM file \"%s\"\n", filename.c_str());
     fclose(fp);
     delete[] data;
     delete[] rgb;
@@ -673,7 +674,7 @@ static bool WriteImagePFM(const string &filename, const float *rgb,
 
     fp = fopen(filename.c_str(), "wb");
     if (!fp) {
-        fprintf(stderr, "Unable to open output PFM file \"%s\"", filename.c_str());
+        fprintf(stderr, "Unable to open output PFM file \"%s\"\n", filename.c_str());
         return false;
     }
 

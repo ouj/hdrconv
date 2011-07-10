@@ -1,11 +1,15 @@
 # setting up cmake
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 # main project name defined
 project(hdrconv)
 
 # set default build to release
 set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin/${BIN_DIR_SUFFIX})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin/${BIN_DIR_SUFFIX})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin/${BIN_DIR_SUFFIX})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(/homebrew/include)
