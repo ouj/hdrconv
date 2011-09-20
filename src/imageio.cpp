@@ -1,6 +1,7 @@
 #include "imageio.h"
 #include <stdint.h>
 #include <assert.h>
+#include <math.h>
 
 // ImageIO Local Declarations
 static Color *ReadImageEXR(const string &name, int *width, int *height);

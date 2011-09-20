@@ -2,10 +2,10 @@
 #include <assert.h>
 
 int main(int argc, char** argv) {
-    char *usage = "usage: hdrconv <input file> <output file>\n";
+    const char *usage = "usage: hdrconv <input file> <output file>\n";
     assert(argc > 2);
     if (argc <= 2) {
-        printf(usage);
+        printf("%s", usage);
         return 0;
     }
     
