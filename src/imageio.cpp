@@ -644,12 +644,20 @@ static Color *ReadImagePFM(const string &filename, int *xres, int *yres) {
     // create RGBs...
     rgb = new Color[width*height];
     if (nChannels == 1) {
-        for (int i = 0; i < width * height; ++i)
-            rgb[i] = Color(data[i], data[i], data[i]);
+        for(int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                float c = data[j * width + i];
+                rgb[(height - j - 1) * width + i] = Color(c, c, c);
+            }
+        }
     }
     else {
-        for (int i = 0; i < width * height; ++i)
-            rgb[i] = Color(&data[3*i]);
+        for(int j = 0; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                int index = j * width + i;
+                rgb[(height - j - 1) * width + i] = Color(&data[3*index]);
+            }
+        }
     }
 
     delete[] data;
@@ -694,9 +702,11 @@ static bool WriteImagePFM(const string &filename, const float *rgb,
 
     // write the data
     nFloats = 3 * width * height;
-    if (fwrite(rgb, sizeof(float), nFloats, fp) < nFloats)
-        goto fail;
-
+    
+    for(int j = height-1; j >= 0; j --) {
+        if(fwrite(rgb + j*width*3, sizeof(float), width*3, fp) < width*3)
+            goto fail;
+    }
     fclose(fp);
     return true;
 
