@@ -13,6 +13,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../bin/${BIN_DIR_SUFFIX
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(/homebrew/include)
+include_directories(/usr/local/include)
+
 
 
 SET(SOURCES
